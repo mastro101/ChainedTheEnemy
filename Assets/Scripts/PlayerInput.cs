@@ -37,7 +37,7 @@ public class PlayerInput : MonoBehaviour
 
         camera.transform.Rotate(new Vector3(mouseY, 0, 0) * RotationSpeed, Space.Self);
         Movement();
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(1))
         {
             Aim();
         }
@@ -83,7 +83,7 @@ public class PlayerInput : MonoBehaviour
         {
             shootedChain.SetTargetPoint(transform.forward.normalized);
         }
-        StartCoroutine(shootedChain.Move());
+        shootedChain.Go();
     }
 
     IEnumerator Reload()
