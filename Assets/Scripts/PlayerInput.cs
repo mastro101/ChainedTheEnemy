@@ -37,7 +37,7 @@ public class PlayerInput : MonoBehaviour
 
         camera.transform.Rotate(new Vector3(mouseY, 0, 0) * RotationSpeed, Space.Self);
         Movement();
-        if (Input.GetMouseButton(1))
+        if (Input.GetKey(KeyCode.E))
         {
             Aim();
         }
@@ -58,7 +58,9 @@ public class PlayerInput : MonoBehaviour
 
     void Aim()
     {
-        AimImage.gameObject.SetActive(true);
+        if (!AimImage.gameObject.activeInHierarchy)
+            AimImage.gameObject.SetActive(true);
+
         if (Input.GetMouseButton(0) && canShoot)
         {
             canShoot = false;
@@ -70,6 +72,17 @@ public class PlayerInput : MonoBehaviour
     void Shoot()
     {
         Chain shootedChain = Instantiate(chainPrefab, ShootPoint.position, transform.rotation, transform);
+        shootedChain.Player = this;
+        Ray aimRay = new Ray(camera.transform.position, camera.transform.forward);
+        RaycastHit aimPosition;
+        if (Physics.Raycast(aimRay, out aimPosition))
+        {
+            shootedChain.SetTargetPoint(aimPosition.point);
+        }
+        else
+        {
+            shootedChain.SetTargetPoint(transform.forward.normalized);
+        }
         StartCoroutine(shootedChain.Move());
     }
 
